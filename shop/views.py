@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_list_or_404,redirect
 from shop.models import Popular_product,Category,Discounted_product,Smartfon
 from django.views.generic import ListView,DeleteView,TemplateView
-
+from django.http import JsonResponse
+import json
 # class NewsListView(ListView):
 #     queryset=Shop.objects.all()
 #     template_name='index.html'
@@ -39,8 +40,11 @@ def Smartfons_view(request):
     return render(request,'Smartfons.html',context=context)
 
 def Basket_view(request):
-    smartfons=Smartfon.objects.all()
+    items=Popular_product.objects.all()
     context={
-        'smartfons':smartfons
+        'items':items
     }
     return render(request,'Basket.html',context=context)
+
+def Checkout_view(request):
+    return render(request,'checkout.html')

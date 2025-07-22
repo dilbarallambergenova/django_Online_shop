@@ -11,7 +11,7 @@
       <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
       <div class="product-name">{{ product.product_name }}</div>
       <div class="product-price">{{ product.price }} </div>
-      <button class="add-to-cart">Savatga</button>
+      <button class="add-to-cart" onclick="addToCart({{ product.id }})">Savatga</button>
     </div>
     {% endfor %}
   </div>

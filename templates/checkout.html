@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}Rasmiylashtirish{% endblock %}
+
+{% block content %}
+<style>
+  .checkout-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .order-summary {
+    flex: 1;
+  }
+
+  .order-summary h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .order-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .order-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: #f9f9f9;
+  }
+
+  .order-item-details {
+    flex: 1;
+  }
+
+  .order-item-details h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  .order-item-details p {
+    margin: 0;
+    color: #444;
+    font-size: 14px;
+  }
+
+  .checkout-form {
+    flex: 1;
+    border-left: 1px solid #eee;
+    padding-left: 30px;
+  }
+
+  .checkout-form h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  .checkout-form input,
+  .checkout-form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+
+  .checkout-form button {
+    background-color: #006400;
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .checkout-form button:hover {
+    background-color: #054d05;
+  }
+
+  .total-price {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+
+  .message {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 15px;
+    background-color: #e6ffed;
+    border: 1px solid #2ecc71;
+    color: #2e7d32;
+    border-radius: 8px;
+  }
+</style>
+
+<!-- ✅ SUCCESS MESSAGE -->
+{% if messages %}
+  <div class="message">
+    {% for message in messages %}
+      {{ message }}
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="checkout-container">
+  <!-- Left: Order Summary -->
+  <div class="order-summary">
+    <h3>Savatdagi mahsulotlar</h3>
+    {% for item in items %}
+    <div class="order-item">
+      <img src="{{ item.product.image.url }}" alt="{{ item.product.product_name }}">
+      <div class="order-item-details">
+        <h4>{{ item.product.product_name }}</h4>
+        <p>{{ item.quantity }} dona × {{ item.product.price }} so‘m</p>
+      </div>
+    </div>
+    {% empty %}
+    <p>Savat bo‘sh</p>
+    {% endfor %}
+
+    <div class="total-price">
+      Umumiy: {{ total_price }} so‘m
+    </div>
+  </div>
+
+  <!-- Right: Form -->
+  <div class="checkout-form">
+    <h3>Buyurtma ma'lumotlari</h3>
+    <form method="post">
+      {% csrf_token %}
+      <input type="text" name="full_name" placeholder="F.I.Sh" required>
+      <input type="tel" name="phone" placeholder="Telefon raqam" required>
+      <textarea name="address" placeholder="Yetkazib berish manzili" rows="4" required></textarea>
+      <button type="submit">Buyurtmani rasmiylashtirish</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
