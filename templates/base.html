@@ -1,0 +1,248 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}My Shop{% endblock %}</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #ffffff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      position: relative;
+    }
+    .left-section {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: #006400;
+      text-decoration: none;
+    }
+    .catalog-button {
+      background-color: #e0f7df;
+      color: #006400;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 16px;
+      position: relative;
+      z-index: 1001;
+      text-decoration: none;
+    }
+    .catalog-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 300px;
+      background-color: #fff;
+      border-right: 1px solid #ccc;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+      max-height: calc(100vh - 60px);
+      overflow-y: auto;
+    }
+    .catalog-menu a {
+      display: block;
+      padding: 12px 20px;
+      text-decoration: none;
+      color: #333;
+      font-size: 16px;
+      border-bottom: 1px solid #f2f2f2;
+    }
+    .catalog-menu a:hover {
+      background-color: #f9f9f9;
+    }
+    .search-bar {
+      flex: 1;
+      display: flex;
+      margin: 0 20px;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px 0 0 10px;
+      outline: none;
+    }
+    .search-bar button {
+      background-color: #eee;
+      border: 1px solid #ccc;
+      border-left: none;
+      padding: 10px 15px;
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+    }
+    .right-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 14px;
+    }
+    .right-section a {
+      text-decoration: none;
+      color: #333;
+    }
+    .content {
+      padding: 30px;
+    }
+    .scroll-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .products {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding: 10px 0;
+      scroll-behavior: smooth;
+    }
+    .products::-webkit-scrollbar {
+      height: 8px;
+    }
+    .products::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 4px;
+    }
+    .product-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 200px;
+      flex-shrink: 0;
+      padding: 10px;
+      text-align: center;
+      position: relative;
+    }
+    .product-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .product-name {
+      margin: 10px 0 5px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+    }
+    .product-price {
+      color: #d62828;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .old-price {
+      text-decoration: line-through;
+      color: #888;
+      font-size: 14px;
+      margin-right: 5px;
+    }
+    .add-to-cart {
+      background-color: #006400;
+      color: white;
+      border: none;
+      padding: 8px;
+      width: 100%;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .heart-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      color: #ccc;
+      cursor: pointer;
+      transition: color 0.3s;
+      user-select: none;
+    }
+    .heart-icon.active {
+      color: #006400;
+    }
+    .scroll-button {
+      font-size: 24px;
+      background-color: #e0f7df;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      color: #006400;
+    }
+    .scroll-button:hover {
+      background-color: #d0eed0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔝 HEADER: Doimiy navbar -->
+  <header>
+    <div class="left-section">
+      <a href="{% url 'home' %}" class="logo">My Shop</a>
+      <a href="{% url 'categories' %}" class="catalog-button">☰ Kategoriyalar</a>
+    </div>
+
+    <form class="search-bar">
+      <input type="text" placeholder="Mahsulotlar va toifalarni qidiring">
+      <button type="submit">🔍</button>
+    </form>
+
+    <div class="right-section">
+      <a href="#">♥ Sevimlilar</a>
+      <a href="#">👤 Kirish</a>
+      <a href="{% url 'basket' %}">🛒 Savat</a>
+    </div>
+  </header>
+
+  <!-- 📄 Kontent -->
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- 🔧 JS -->
+  <script>
+    function toggleCatalog() {
+      const menu = document.getElementById('catalogMenu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('click', function(e) {
+      const menu = document.getElementById('catalogMenu');
+      const button = document.querySelector('.catalog-button');
+      if (menu && !menu.contains(e.target) && !button.contains(e.target)) {
+        menu.style.display = 'none';
+      }
+    });
+
+    function toggleHeart(element) {
+      element.classList.toggle('active');
+    }
+
+    function scrollProducts(direction, containerId) {
+      const container = document.getElementById(containerId);
+      const scrollAmount = 220;
+      if (direction === 'left') {
+        container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      } else {
+        container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
+  </script>
+</body>
+</html>

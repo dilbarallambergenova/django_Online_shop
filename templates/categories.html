@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% block title %}My shop-Kategoriyalar{% endblock %}
+
+{% block content %}
+<style>
+  .category-container {
+    display: flex;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .main-categories {
+    width: 250px;
+    background-color: #f8f8f8;
+    border-right: 1px solid #ddd;
+    padding: 0;
+    list-style: none;
+  }
+
+  .main-categories li {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+  }
+
+  .main-categories li:hover,
+  .main-categories li.active {
+    background-color: #e6f0ff;
+    font-weight: bold;
+  }
+
+  .main-categories .icon {
+    margin-right: 10px;
+    font-size: 20px;
+  }
+
+  .submenu-wrapper {
+    flex: 1;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+  }
+
+  .submenu-area {
+    display: none;
+  }
+
+  .submenu-area.active {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .submenu-area h2 {
+    width: 100%;
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  /* RESPONSIV UCHUN YANGI QISM */
+  .submenu-block {
+    flex: 1 1 100%; /* Default: 1 ustun (mobil) */
+    margin-bottom: 20px;
+  }
+
+  @media (min-width: 640px) {
+    .submenu-block {
+      flex: 1 1 calc(50% - 20px); /* 2 ustun */
+    }
+  }
+
+  @media (min-width: 900px) {
+    .submenu-block {
+      flex: 1 1 calc(33.333% - 20px); /* 3 ustun */
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .submenu-block {
+      flex: 1 1 calc(25% - 20px); /* 4 ustun */
+    }
+  }
+
+  .submenu-block h4 {
+    margin-bottom: 10px;
+    font-size: 17px;
+    color: #333;
+  }
+
+  .submenu-block ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .submenu-block ul li {
+    margin-bottom: 6px;
+  }
+
+  .submenu-block ul li a {
+    color: #333;
+    text-decoration: none;
+    padding: 3px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    position: relative;
+    transition: color 0.3s;
+  }
+
+  .submenu-block ul li a:hover {
+    color: #007bff;
+  }
+
+  .submenu-block ul li a.active {
+    color: #007bff;
+    font-weight: 500;
+  }
+
+  .submenu-block ul li a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 6px;
+    width: calc(100% - 12px);
+    height: 2px;
+    background-color: #007bff;
+  }
+</style>
+
+<div class="category-container">
+  <!-- Chap tomonda asosiy kategoriyalar -->
+  <ul class="main-categories">
+    {% for category in categories %}
+      <li onmouseover="showSubmenu({{ category.id }})" id="main-cat-{{ category.id }}">
+        <span class="icon">{{ category.icon|default:"📁" }}</span>
+        {{ category.name }}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <!-- O'ng tomonda submenu -->
+  <div class="submenu-wrapper">
+    {% for category in categories %}
+      <div id="submenu-{{ category.id }}" class="submenu-area">
+        <h2>{{ category.name }}</h2>
+
+        {% for sub in category.children.all %}
+          <div class="submenu-block">
+            <h4>{{ sub.name }}</h4>
+            <ul>
+              {% if sub.children.exists %}
+                {% for child in sub.children.all %}
+                  <li>
+                    <a href="{% url 'smartfons' %}"
+                      class="{% if request.path == child.get_absolute_url %}active{% endif %}">
+                      {{ child.name }}
+                    </a>
+                  </li>
+                {% endfor %}
+              {% else %}
+                <li>
+                  <a href="{{ sub.get_absolute_url }}"
+                    class="{% if request.path == sub.get_absolute_url %}active{% endif %}">
+                    {{ sub.name }}
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  function showSubmenu(id) {
+    document.querySelectorAll('.submenu-area').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.main-categories li').forEach(el => el.classList.remove('active'));
+
+    const submenu = document.getElementById('submenu-' + id);
+    const mainCat = document.getElementById('main-cat-' + id);
+
+    if (submenu) submenu.classList.add('active');
+    if (mainCat) mainCat.classList.add('active');
+  }
+
+  // Avtomatik ochilgan menyuni belgilash
+  window.addEventListener('DOMContentLoaded', () => {
+    const activeLink = document.querySelector('.submenu-block a.active');
+    if (activeLink) {
+      const submenu = activeLink.closest('.submenu-area');
+      if (submenu) {
+        submenu.classList.add('active');
+        const id = submenu.id.split('-')[1];
+        const mainCat = document.getElementById('main-cat-' + id);
+        if (mainCat) mainCat.classList.add('active');
+      }
+    }
+  });
+</script>
+{% endblock %}

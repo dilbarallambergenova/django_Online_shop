@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}My shop - Bosh sahifa{% endblock %}
+
+{% block content %}
+  <h2>Ommabop mahsulotlar ></h2>
+  <div class="scroll-container">
+    <button class="scroll-button" onclick="scrollProducts('left', 'popularContainer')">←</button>
+    <div class="products" id="popularContainer">
+      {% for product in popular_products %}
+      <div class="product-card">
+        <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
+        <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
+        <div class="product-name">{{ product.product_name }}</div>
+        <div class="product-price">{{ product.price }}</div>
+        <button class="add-to-cart">Savatga</button>
+      </div>
+      {% endfor %}
+    </div>
+        <button class="scroll-button" onclick="scrollProducts('right', 'popularContainer')">→</button>
+  </div>
+   <h2>Hafta super narxlari ></h2>
+  <div class="scroll-container">
+    <button class="scroll-button" onclick="scrollProducts('left', 'dicountedContainer')">←</button>
+    <div class="products" id="dicountedContainer">
+      {% for product in dicounted_productss %}
+      <div class="product-card">
+        <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
+        <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
+        <div class="product-name">{{ product.product_name }}</div>
+        <div class="product-price">{{ product.price }}</div>
+        <div class="product-old_price"><s>{{product.old_price}}</s></div>
+        <button class="add-to-cart">Savatga</button>
+      </div>
+      {% endfor %}
+    </div>
+        <button class="scroll-button" onclick="scrollProducts('right', 'dicountedContainer')">→</button>
+  </div>
+
+{% endblock %}
