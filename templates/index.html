@@ -12,7 +12,7 @@
         <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
         <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
         <div class="product-name">{{ product.product_name }}</div>
-        <div class="product-price">{{ product.price }}</div>
+        <div class="product-price">{{ product.price }} so'm</div>
         <button class="add-to-cart" onclick="addToCart({{ product.id }})">Savatga</button>
       </div>
       {% endfor %}
@@ -23,13 +23,13 @@
   <div class="scroll-container">
     <button class="scroll-button" onclick="scrollProducts('left', 'dicountedContainer')">←</button>
     <div class="products" id="dicountedContainer">
-      {% for product in dicounted_productss %}
+      {% for product in discounted_products %}
       <div class="product-card">
         <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
         <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
         <div class="product-name">{{ product.product_name }}</div>
-        <div class="product-price">{{ product.price }}</div>
-        <div class="product-old_price"><s>{{product.old_price}}</s></div>
+        <div class="product-price">{{ product.discount_price }} so'm</div>
+        <div class="product-old_price"><s>{{product.price}} so'm</s></div>
         <button class="add-to-cart" onclick="addToCart({{ product.id }})">Savatga</button>
       </div>
       {% endfor %}

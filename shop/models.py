@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils.text import slugify
 
 class Category(models.Model):
     name=models.CharField(max_length=100)
@@ -10,36 +10,27 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class Smartfon(models.Model):
+class Product(models.Model):
     product_name=models.CharField(max_length=100)
-    image=models.ImageField(upload_to='shop')
-    price=models.CharField(max_length=100)
+    price=models.IntegerField()
+    image=models.ImageField(upload_to='product/images')
     category=models.ForeignKey(Category,on_delete=models.SET_NULL,
                                null=True)
+    discount_price=models.IntegerField(null=True,blank=True)
+    description=models.TextField(blank=True,null=True)
+    quantity=models.IntegerField(default=0)
+    is_popular=models.BooleanField(default=False)
     
+    def is_discounted(self):
+        return self.discount_price is not None
     def __str__(self):
         return self.product_name
 
 
     
-class Popular_product(models.Model):
-    product_name=models.CharField(max_length=100)
-    image=models.ImageField(upload_to='shop')
-    price=models.CharField(max_length=100)
-    category=models.ForeignKey(Category,on_delete=models.SET_NULL,
-                               null=True)
-    
-    def __str__(self):
-        return self.product_name
-    
-    
-class Discounted_product(models.Model):
-    product_name=models.CharField(max_length=100)
-    image=models.ImageField(upload_to='discounted_product')
-    price=models.CharField(max_length=100)
-    old_price=models.CharField(max_length=100)
-    category=models.ForeignKey(Category,on_delete=models.SET_NULL,
-                               null=True)
-    def __str__(self):
-        return self.product_name
 
+
+
+
+
+    

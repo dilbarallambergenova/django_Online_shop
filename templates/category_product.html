@@ -1,16 +1,21 @@
 {% extends 'base.html' %}
 
-{% block title %}My shop - Smartfonlar{% endblock %}
+{% block title %}My shop -{{category.name}}{% endblock %}
 
 {% block content %}
-  <h2>Smartfonlar</h2>
+  <h2>{{category.name}}</h2>
   <div class="product-grid">
-    {% for product in smartfons %}
+    {% for product in products %}
     <div class="product-card">
       <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
       <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
       <div class="product-name">{{ product.product_name }}</div>
-      <div class="product-price">{{ product.price }} </div>
+      {% if product.discount_price %}
+      <div class="product-price">{{ product.discount_price }} so'm</div>
+      <div class="product-dprice"><s>{{ product.price}} so'm<s></div>
+      {% else %}
+      <div class="product-price">{{ product.price}} so'm</div>
+      {% endif %}
       <button class="add-to-cart" onclick="addToCart({{ product.id }})">Savatga</button>
     </div>
     {% endfor %}

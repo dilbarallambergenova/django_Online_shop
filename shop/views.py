@@ -1,5 +1,5 @@
-from django.shortcuts import render,get_list_or_404,redirect
-from shop.models import Popular_product,Category,Discounted_product,Smartfon
+from django.shortcuts import render,get_object_or_404,redirect
+from shop.models import Category,Product
 from django.views.generic import ListView,DeleteView,TemplateView
 from django.http import JsonResponse
 import json
@@ -12,12 +12,12 @@ class HomeView(TemplateView):
     template_name='index.html'
     def get_context_data(self, **kwargs):
         context=super().get_context_data(**kwargs)
-        popular_products=Popular_product.objects.all()
+        popular_products=Product.objects.filter(is_popular=True)
+        discounted_products=Product.objects.filter(discount_price__isnull=False)
         categories=Category.objects.all()
-        discounted_products=Discounted_product.objects.all()
         context['popular_products']=popular_products
+        context['discounted_products']=discounted_products
         context['categories']=categories
-        context['dicounted_productss']=discounted_products
         return context
 
     
@@ -32,19 +32,14 @@ def categories_view(request):
     }
     return render(request,'categories.html',context=context)
 
-def Smartfons_view(request):
-    smartfons=Smartfon.objects.all()
+def category_products_view(request,name):
+    category=get_object_or_404(Category,name=name)
+    products=Product.objects.filter(category=category)
     context={
-        'smartfons':smartfons
+        'category':category,
+        'products':products
     }
-    return render(request,'Smartfons.html',context=context)
+    return render(request,'category_product.html',context)
+# def Smartfons_view(request):
+#     smartfons=Smartfon.objects.all()
 
-def Basket_view(request):
-    items=Popular_product.objects.all()
-    context={
-        'items':items
-    }
-    return render(request,'Basket.html',context=context)
-
-def Checkout_view(request):
-    return render(request,'checkout.html')

@@ -153,7 +153,7 @@
               {% if sub.children.exists %}
                 {% for child in sub.children.all %}
                   <li>
-                    <a href="{% url 'smartfons' %}"
+                    <a href="{% url 'category_product' child.name %}"
                       class="{% if request.path == child.get_absolute_url %}active{% endif %}">
                       {{ child.name }}
                     </a>
