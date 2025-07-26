@@ -1,23 +1,27 @@
 {% extends 'base.html' %}
 
-{% block title %}My shop -{{category.name}}{% endblock %}
+{% block title %}My shop - {{ category.name }}{% endblock %}
 
 {% block content %}
-  <h2>{{category.name}}</h2>
+  <h2>{{ category.name }}</h2>
   <div class="product-grid">
     {% for product in products %}
-    <div class="product-card">
-      <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
-      <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
-      <div class="product-name">{{ product.product_name }}</div>
-      {% if product.discount_price %}
-      <div class="product-price">{{ product.discount_price }} so'm</div>
-      <div class="product-dprice"><s>{{ product.price}} so'm<s></div>
-      {% else %}
-      <div class="product-price">{{ product.price}} so'm</div>
-      {% endif %}
-      <button class="add-to-cart" onclick="addToCart({{ product.id }})">Savatga</button>
-    </div>
+      <div class="product-card">
+        <span class="heart-icon {% if product.id in favorites %}liked{% endif %}"
+              onclick="toggleFavorite({{ product.id }}, this)">♥</span>
+        
+        <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
+        <div class="product-name">{{ product.product_name }}</div>
+
+        {% if product.discount_price %}
+          <div class="product-price">{{ product.discount_price }} so'm</div>
+          <div class="product-dprice"><s>{{ product.price }} so'm</s></div>
+        {% else %}
+          <div class="product-price">{{ product.price }} so'm</div>
+        {% endif %}
+
+        <button class="add-to-cart" onclick="addToCart({{ product.id }})">Savatga</button>
+      </div>
     {% endfor %}
   </div>
 
@@ -60,6 +64,11 @@
       margin-bottom: 10px;
     }
 
+    .product-dprice {
+      font-size: 14px;
+      color: #999;
+    }
+
     .add-to-cart {
       background-color: #006400;
       color: white;
@@ -74,21 +83,34 @@
       position: absolute;
       top: 10px;
       right: 10px;
-      font-size: 20px;
-      color: #ccc;
+      font-size: 24px;
       cursor: pointer;
       transition: color 0.3s;
       user-select: none;
+      color: gray; /* Default */
     }
 
     .heart-icon.liked {
-      color: #006400; /* To'q yashil */
+      color: #006400; /* To‘q yashil */
     }
   </style>
 
   <script>
-    function toggleHeart(el) {
-      el.classList.toggle('liked');
+    function toggleFavorite(productId, element) {
+      fetch(`/favorites/toggle/${productId}/`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            if (data.action === 'added') {
+              element.classList.add('liked');
+            } else if (data.action === 'removed') {
+              element.classList.remove('liked');
+            }
+          }
+        })
+        .catch(error => {
+          console.error("Xatolik:", error);
+        });
     }
   </script>
 {% endblock %}

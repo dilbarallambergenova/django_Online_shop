@@ -9,7 +9,9 @@
     <div class="products" id="popularContainer">
       {% for product in popular_products %}
       <div class="product-card">
-        <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
+        <span class="heart-icon"
+              style="color: {% if product.id in favorites %}#006400{% else %}gray{% endif %};"
+              onclick="toggleFavorite({{ product.id }}, this)">♥</span>
         <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
         <div class="product-name">{{ product.product_name }}</div>
         <div class="product-price">{{ product.price }} so'm</div>
@@ -17,15 +19,18 @@
       </div>
       {% endfor %}
     </div>
-        <button class="scroll-button" onclick="scrollProducts('right', 'popularContainer')">→</button>
+    <button class="scroll-button" onclick="scrollProducts('right', 'popularContainer')">→</button>
   </div>
-   <h2>Hafta super narxlari ></h2>
+
+  <h2>Hafta super narxlari ></h2>
   <div class="scroll-container">
     <button class="scroll-button" onclick="scrollProducts('left', 'dicountedContainer')">←</button>
     <div class="products" id="dicountedContainer">
       {% for product in discounted_products %}
       <div class="product-card">
-        <span class="heart-icon" onclick="toggleHeart(this)">♥</span>
+        <span class="heart-icon"
+              style="color: {% if product.id in favorites %}#006400{% else %}gray{% endif %};"
+              onclick="toggleFavorite({{ product.id }}, this)">♥</span>
         <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
         <div class="product-name">{{ product.product_name }}</div>
         <div class="product-price">{{ product.discount_price }} so'm</div>
@@ -34,7 +39,34 @@
       </div>
       {% endfor %}
     </div>
-        <button class="scroll-button" onclick="scrollProducts('right', 'dicountedContainer')">→</button>
+    <button class="scroll-button" onclick="scrollProducts('right', 'dicountedContainer')">→</button>
   </div>
+
+  <style>
+    .heart-icon {
+      cursor: pointer;
+      font-size: 24px;
+    }
+  </style>
+
+<script>
+  function toggleFavorite(productId, element) {
+    fetch(`/favorites/toggle/${productId}/`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          if (data.action === 'added') {
+            element.style.color = '#006400'; // To‘q yashil
+          } else if (data.action === 'removed') {
+            element.style.color = 'gray'; // Avvalgi holat
+          }
+        }
+      })
+      .catch(error => {
+        console.error("Xatolik:", error); // faqat console-da ko‘rinadi
+      });
+  }
+</script>
+
 
 {% endblock %}

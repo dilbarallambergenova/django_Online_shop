@@ -1,0 +1,71 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Sevimli mahsulotlar{% endblock %}
+
+{% block content %}
+  <h2>♥ Sevimlilar</h2>
+  {% if products %}
+    <div class="product-grid">
+      {% for product in products %}
+        <div class="product-card" id="product-{{ product.id }}">
+          <span class="heart-icon"
+                style="color: #006400;"
+                onclick="removeFromFavorites({{ product.id }})">♥</span>
+          <img src="{{ product.image.url }}" alt="Mahsulot rasmi">
+          <div class="product-name">{{ product.product_name }}</div>
+          
+          {% if product.discount_price %}
+            <div class="product-price">{{ product.discount_price }} so'm</div>
+            <div class="product-dprice"><s>{{ product.price }} so'm</s></div>
+          {% else %}
+            <div class="product-price">{{ product.price }} so'm</div>
+          {% endif %}
+
+          <button class="add-to-cart" onclick="addToCart({{ product.id }})">Savatga</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Sevimli mahsulotlar yo‘q.</p>
+  {% endif %}
+
+  <style>
+    .heart-icon {
+      cursor: pointer;
+      font-size: 24px;
+      color: #006400;
+    }
+
+    .product-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .product-card {
+      width: 200px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 10px;
+    }
+  </style>
+
+  <script>
+    function removeFromFavorites(productId) {
+      fetch(`/favorites/toggle/${productId}/`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.success && data.action === 'removed') {
+            const productCard = document.getElementById(`product-${productId}`);
+            if (productCard) {
+              productCard.remove();
+            }
+          }
+        })
+        .catch(error => {
+          console.error("Xatolik:", error);
+        });
+    }
+  </script>
+{% endblock %}
