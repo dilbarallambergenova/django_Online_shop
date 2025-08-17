@@ -42,34 +42,32 @@ def category_products_view(request,name):
         'products':products
     }
     return render(request,'category_product.html',context)
-# def Smartfons_view(request):
-#     smartfons=Smartfon.objects.all()
-def add_to_favorites(request, product_id):
-    # product = get_object_or_404(Product, id=product_id)
-    favorites = request.session.get('favorites', [])
+
+def add_to_favorites(request,product_id):
+    favorites=request.session.get('favorites',[])
     if product_id not in favorites:
         favorites.append(product_id)
-        request.session['favorites'] = favorites
-        request.session.modified = True  # bu muhim!
-
-    return JsonResponse({'success': True})
+        request.session['favorites']=favorites
+        request.session.modified=True
+    
+    return JsonResponse({'success':True})
 
 def favorite_products(request):
-    favorites = request.session.get('favorites', [])
-    products = Product.objects.filter(id__in=favorites)
-    return render(request, 'favorite.html', {'products': products})
-
-def toggle_favorite(request, product_id):
-    favorites = request.session.get('favorites', [])
-
+    favorites=request.session.get('favorites',[])
+    products=Product.objects.filter(id__in=favorites)
+    return render(request,'favorite.html',{'products':products})
+    
+def toggle_favorite(request,product_id):
+    favorites=request.session.get('favorites',[])
+    
     if product_id in favorites:
         favorites.remove(product_id)
-        action = 'removed'
+        action='removed'
     else:
         favorites.append(product_id)
-        action = 'added'
-
-    request.session['favorites'] = favorites
-    request.session.modified = True
-
-    return JsonResponse({'success': True, 'action': action})
+        action='added'
+        
+    request.session['favorites']=favorites
+    request.session.modified=True
+    
+    return JsonResponse({'success':True,'action':action})
